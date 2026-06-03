@@ -1,59 +1,47 @@
 pipeline {
-
     agent any
 
     stages {
-
         stage('Checkout') {
-
             steps {
-
                 checkout scm
-
             }
-
         }
 
         stage('Terraform Init') {
-
             steps {
-
                 sh 'terraform init'
-
             }
-
         }
 
         stage('Terraform Validate') {
-
             steps {
-
                 sh 'terraform validate'
-
             }
-
         }
 
         stage('Terraform Plan') {
-
             steps {
-
-                sh 'terraform plan'
-
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    env.AWS_DEFAULT_REGION = 'us-east-1' 
+                    sh 'terraform plan'
+                }
             }
-
         }
 
         stage('Terraform Apply') {
-
             steps {
-
-                sh 'terraform apply -auto-approve'
-
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    env.AWS_DEFAULT_REGION = 'us-east-1' 
+                    sh 'terraform apply -auto-approve'
+                }
             }
-
         }
-
     }
-
 }
