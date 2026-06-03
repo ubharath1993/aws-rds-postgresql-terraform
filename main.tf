@@ -4,7 +4,7 @@ resource "aws_db_instance" "postgres" {
 
   engine = "postgres"
 
-  engine_version = "17.2"
+  engine_version = "17"
 
   instance_class = "db.t3.medium"
 
